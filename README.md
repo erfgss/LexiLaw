@@ -15,6 +15,8 @@
 
 🔥[Awesome-LegalAI-Resources](https://github.com/CSHaitao/Awesome-LegalAI-Resources)整理了Legal-AI领域相关资源，方便大模型训练与评估。
 
+🔥[LegalOne](https://github.com/CSHaitao/LegalOne)法律推理大模型LegalOne开源啦，欢迎大家关注
+
 ## 免责声明
 
 请各位严格遵守如下约定：
