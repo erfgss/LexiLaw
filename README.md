@@ -136,6 +136,28 @@ python inference_qwen.py --model Qwen/Qwen3.6-35B-A3B \
     --adapter outputs/qwen3.6-legal-lora
 ```
 
+### Ascend 910B 适配
+
+`Qwen_law_ascend` 分支提供 `torch_npu` + BF16 + DeepSpeed ZeRO-3 训练入口。
+35B MoE 模型权重规模较大，910B 单卡通常无法容纳完整模型，建议使用多卡；
+不要在昇腾训练入口中使用 CUDA、bitsandbytes 或 `device_map=auto`。
+
+先在目标机器上按 CANN、驱动、PyTorch、TorchNPU 的兼容矩阵安装环境，并确认：
+
+```bash
+source /usr/local/Ascend/ascend-toolkit/set_env.sh
+python scripts/check_ascend.py
+```
+
+然后启动多卡 LoRA 训练：
+
+```bash
+NPU_COUNT=8 bash scripts/launch_qwen_ascend.sh
+```
+
+也可以通过 `MODEL`、`DATA` 和 `OUTPUT` 环境变量覆盖默认路径。该分支提供
+`inference_qwen_ascend.py` 作为单 NPU smoke test；生产推理仍需根据实际显存和部署方案做多卡分片。
+
 LexiLaw 的训练数据是通过综合使用通用领域数据、专业法律数据和法律文书进行微调而得到的。我们发现仅使用法律领域数据进行微调容易导致严重的过拟合现象，会导致模型忘掉原有的能力。
 
 因此, 我们采用了以下数据组合来丰富模型的知识和能力：
