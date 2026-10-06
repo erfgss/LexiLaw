@@ -1,0 +1,34 @@
+[
+  {
+    "id": "current-law-001",
+    "conversations": [
+      {"from": "user", "value": "请给出《中华人民共和国民法典》第二条的现行内容，并标明法律版本。"},
+      {"from": "assistant", "value": "《中华人民共和国民法典》第二条（2020年通过、2021年1月1日起施行）规定：民法调整平等主体的自然人、法人和非法人组织之间的人身关系和财产关系。"}
+    ],
+    "metadata": {"clause_id": "PRC_CIVIL_CODE_ART_002", "task": "current_article_qa"}
+  },
+  {
+    "id": "current-law-002",
+    "conversations": [
+      {"from": "user", "value": "《中华人民共和国劳动合同法》第三十七条现行规定是什么？"},
+      {"from": "assistant", "value": "现行《中华人民共和国劳动合同法》第三十七条（2012年修正）规定：劳动者提前三十日以书面形式通知用人单位，可以解除劳动合同。劳动者在试用期内提前三日通知用人单位，可以解除劳动合同。"}
+    ],
+    "metadata": {"clause_id": "LABOR_CONTRACT_LAW_ART_037", "task": "current_article_qa"}
+  },
+  {
+    "id": "current-law-003",
+    "conversations": [
+      {"from": "user", "value": "2026年查询《中华人民共和国食品安全法》第一条时，应以什么版本为准？"},
+      {"from": "assistant", "value": "应以国家法律法规数据库所列最新沿革版本为准。本实验记录的版本标识为2025-09-12，第一条规定：为保证食品安全，保障公众身体健康和生命安全，制定本法。正式业务使用前仍应再次核对官方数据库的最新状态。"}
+    ],
+    "metadata": {"clause_id": "FOOD_SAFETY_LAW_ART_001", "task": "version_selection"}
+  },
+  {
+    "id": "current-law-004",
+    "conversations": [
+      {"from": "user", "value": "请判断：只知道法律名称和条号，能否确认历史条文与现行条文完全对应？"},
+      {"from": "assistant", "value": "不能。条号可能因新增、删除、拆分、合并或修订而漂移；必须同时核对法律版本、生效日期、条文内容以及修订决定。证据不足时不应直接声称两条完全对应。"}
+    ],
+    "metadata": {"task": "anti_hallucination"}
+  }
+]

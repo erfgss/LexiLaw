@@ -111,6 +111,34 @@ LexiLaw 是一个经过微调的中文法律大模型，它基于 ChatGLM-6B 架
 
 ## 训练数据
 
+### 现行法条漂移实验（新增）
+
+项目新增了一个小规模、可审计的现行法条实验集，条文记录在
+`data/legal/current_articles.jsonl`，包含法律版本、生效日期、条号、来源和核验日期；
+`scripts/build_current_dataset.py` 可生成带 metadata 的检索数据和 Qwen 对话数据。
+
+运行：
+
+```bash
+python scripts/build_current_dataset.py
+```
+
+Qwen LoRA 训练入口：
+
+```bash
+python scripts/train_qwen_lora.py --model Qwen/Qwen3.6-35B-A3B
+```
+
+训练完成后可使用版本感知的推理入口：
+
+```bash
+python inference_qwen.py --model Qwen/Qwen3.6-35B-A3B \
+    --adapter outputs/qwen3.6-legal-lora
+```
+
+当前数据只是流程实验集，不代表完整法律数据库。每条数据必须继续补充官方来源和版本对照；
+在正式法律业务中，应以国家法律法规数据库的最新状态为准。
+
 
 LexiLaw 的训练数据是通过综合使用通用领域数据、专业法律数据和法律文书进行微调而得到的。我们发现仅使用法律领域数据进行微调容易导致严重的过拟合现象，会导致模型忘掉原有的能力。
 

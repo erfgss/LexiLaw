@@ -1,0 +1,70 @@
+[
+  {
+    "id": "article-PRC_CIVIL_CODE_ART_002",
+    "conversations": [
+      {
+        "from": "user",
+        "value": "请给出中华人民共和国民法典第二条的现行内容，并说明版本。"
+      },
+      {
+        "from": "assistant",
+        "value": "中华人民共和国民法典第二条（2020年通过、2021年1月1日起施行）规定：民法调整平等主体的自然人、法人和非法人组织之间的人身关系和财产关系。"
+      }
+    ],
+    "metadata": {
+      "clause_id": "PRC_CIVIL_CODE_ART_002",
+      "task": "current_article_qa"
+    }
+  },
+  {
+    "id": "article-LABOR_CONTRACT_LAW_ART_037",
+    "conversations": [
+      {
+        "from": "user",
+        "value": "请给出中华人民共和国劳动合同法第三十七条的现行内容，并说明版本。"
+      },
+      {
+        "from": "assistant",
+        "value": "中华人民共和国劳动合同法第三十七条（2012年修正）规定：劳动者提前三十日以书面形式通知用人单位，可以解除劳动合同。劳动者在试用期内提前三日通知用人单位，可以解除劳动合同。"
+      }
+    ],
+    "metadata": {
+      "clause_id": "LABOR_CONTRACT_LAW_ART_037",
+      "task": "current_article_qa"
+    }
+  },
+  {
+    "id": "article-FOOD_SAFETY_LAW_ART_001",
+    "conversations": [
+      {
+        "from": "user",
+        "value": "请给出中华人民共和国食品安全法第一条的现行内容，并说明版本。"
+      },
+      {
+        "from": "assistant",
+        "value": "中华人民共和国食品安全法第一条（国家法律法规数据库所列最新沿革版本）规定：为保证食品安全，保障公众身体健康和生命安全，制定本法。"
+      }
+    ],
+    "metadata": {
+      "clause_id": "FOOD_SAFETY_LAW_ART_001",
+      "task": "current_article_qa"
+    }
+  },
+  {
+    "id": "article-ADMIN_PENALTY_LAW_ART_004",
+    "conversations": [
+      {
+        "from": "user",
+        "value": "请给出中华人民共和国行政处罚法第四条的现行内容，并说明版本。"
+      },
+      {
+        "from": "assistant",
+        "value": "中华人民共和国行政处罚法第四条（2021年修订）规定：公民、法人或者其他组织违反行政管理秩序的行为，应当给予行政处罚的，依照本法由法律、法规、规章规定，并由行政机关依照本法规定的程序实施。"
+      }
+    ],
+    "metadata": {
+      "clause_id": "ADMIN_PENALTY_LAW_ART_004",
+      "task": "current_article_qa"
+    }
+  }
+]

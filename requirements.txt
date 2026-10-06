@@ -1,7 +1,8 @@
-python=3.9
-transformers==4.28.1
+python>=3.10
+transformers>=4.57.0
 tqdm==4.64.1
-datasets==2.8.0
-pytorch==1.12.1
-deepspeed==0.9.1
-peft==0.3.0 
+datasets>=2.18.0
+peft>=0.20.0
+trl>=0.20.0
+torch>=2.1.0
+deepspeed>=0.14.0
