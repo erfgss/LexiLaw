@@ -1,4 +1,4 @@
-"""BF16 LoRA SFT entry point for Ascend 910B/torch_npu.
+"""LoRA/QLoRA SFT entry point for Ascend/torch_npu.
 
 Launch with scripts/launch_qwen_ascend.sh so each rank is assigned one NPU.
 The model is intentionally not loaded with device_map='auto': DeepSpeed ZeRO-3
@@ -10,9 +10,10 @@ import os
 import torch
 import torch_npu  # noqa: F401 - registers the NPU backend
 from datasets import load_dataset
-from peft import LoraConfig
-from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments
-from trl import SFTTrainer
+from peft import LoraConfig, prepare_model_for_kbit_training
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers.integrations import HfDeepSpeedConfig
+from trl import SFTConfig, SFTTrainer
 
 
 def format_row(row, tokenizer):
@@ -29,8 +30,11 @@ def main():
     parser.add_argument("--data", default="data/sft/current_law_sft.json")
     parser.add_argument("--output", default="outputs/qwen3.6-legal-ascend-lora")
     parser.add_argument("--deepspeed", default="ds_config_ascend_zero3.json")
-    parser.add_argument("--max-seq-length", type=int, default=4096)
+    parser.add_argument("--max-seq-length", type=int, default=512)
     parser.add_argument("--epochs", type=float, default=3.0)
+    parser.add_argument("--qlora", action="store_true", help="Load an INT4 pre-quantized base and train only LoRA adapters.")
+    parser.add_argument("--lora-r", type=int, default=8)
+    parser.add_argument("--lora-alpha", type=int, default=16)
     args = parser.parse_args()
 
     if not torch.npu.is_available():
@@ -42,24 +46,41 @@ def main():
     dataset = load_dataset("json", data_files=args.data, split="train")
     dataset = dataset.map(lambda row: {"text": format_row(row, tokenizer)})
 
-    # Do not set device_map here. DeepSpeed places/shards the model per rank.
+    # Register ZeRO-3 before loading so Transformers can shard weights during
+    # from_pretrained instead of moving the full model to every NPU.
+    ds_hf_config = HfDeepSpeedConfig(args.deepspeed)
     model = AutoModelForCausalLM.from_pretrained(
         args.model,
         torch_dtype=torch.bfloat16,
         trust_remote_code=True,
-        low_cpu_mem_usage=True,
+        low_cpu_mem_usage=False,
     )
     model.config.use_cache = False
 
+    if args.qlora:
+        # The model directory must contain an Ascend-compatible INT4 loader.
+        # Do not silently enable CUDA bitsandbytes on torch_npu.
+        is_quantized = bool(
+            getattr(model, "is_loaded_in_4bit", False)
+            or getattr(model, "is_loaded_in_8bit", False)
+            or getattr(model, "quantization_config", None) is not None
+        )
+        if not is_quantized:
+            raise RuntimeError(
+                "--qlora requires an Ascend-compatible pre-quantized model "
+                "directory; do not use CUDA bitsandbytes on torch_npu."
+            )
+        model = prepare_model_for_kbit_training(model)
+
     peft_config = LoraConfig(
-        r=32,
-        lora_alpha=64,
+        r=args.lora_r,
+        lora_alpha=args.lora_alpha,
         lora_dropout=0.05,
         bias="none",
         task_type="CAUSAL_LM",
         target_modules="all-linear",
     )
-    training_args = TrainingArguments(
+    training_args = SFTConfig(
         output_dir=args.output,
         learning_rate=2e-4,
         num_train_epochs=args.epochs,
@@ -74,13 +95,13 @@ def main():
         ddp_find_unused_parameters=False,
         report_to="none",
         remove_unused_columns=False,
+        dataset_text_field="text",
+        max_length=args.max_seq_length,
     )
     trainer = SFTTrainer(
         model=model,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
         train_dataset=dataset,
-        dataset_text_field="text",
-        max_seq_length=args.max_seq_length,
         peft_config=peft_config,
         args=training_args,
     )
