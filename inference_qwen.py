@@ -8,8 +8,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", default="Qwen/Qwen3.6-35B-A3B")
-    parser.add_argument("--adapter", default="outputs/qwen3.6-legal-lora")
+    parser.add_argument("--model", default="Qwen/Qwen3-8B")
+    parser.add_argument("--adapter", default="outputs/qwen3-8b-legal-lora")
     parser.add_argument("--max-new-tokens", type=int, default=512)
     args = parser.parse_args()
 

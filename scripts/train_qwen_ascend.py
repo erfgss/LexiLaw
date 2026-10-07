@@ -26,9 +26,10 @@ def format_row(row, tokenizer):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", default="Qwen/Qwen3.6-35B-A3B")
+    parser.add_argument("--model", default="/workspace/Qwen3-8B")
     parser.add_argument("--data", default="data/sft/current_law_sft.json")
-    parser.add_argument("--output", default="outputs/qwen3.6-legal-ascend-lora")
+    parser.add_argument("--eval-data", default=None)
+    parser.add_argument("--output", default="outputs/qwen3-8b-legal-ascend-lora-fast")
     parser.add_argument("--deepspeed", default="ds_config_ascend_zero3.json")
     parser.add_argument("--max-seq-length", type=int, default=512)
     parser.add_argument("--epochs", type=float, default=3.0)
@@ -45,6 +46,10 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
     dataset = load_dataset("json", data_files=args.data, split="train")
     dataset = dataset.map(lambda row: {"text": format_row(row, tokenizer)})
+    eval_dataset = None
+    if args.eval_data:
+        eval_dataset = load_dataset("json", data_files=args.eval_data, split="train")
+        eval_dataset = eval_dataset.map(lambda row: {"text": format_row(row, tokenizer)})
 
     # Register ZeRO-3 before loading so Transformers can shard weights during
     # from_pretrained instead of moving the full model to every NPU.
@@ -84,11 +89,14 @@ def main():
         output_dir=args.output,
         learning_rate=2e-4,
         num_train_epochs=args.epochs,
-        per_device_train_batch_size=1,
-        gradient_accumulation_steps=8,
-        gradient_checkpointing=True,
+        per_device_train_batch_size=4,
+        per_device_eval_batch_size=4,
+        gradient_accumulation_steps=2,
+        gradient_checkpointing=False,
+        packing=False,
         logging_steps=1,
         save_strategy="epoch",
+        eval_strategy="epoch" if eval_dataset is not None else "no",
         bf16=True,
         tf32=False,
         deepspeed=args.deepspeed,
@@ -102,6 +110,7 @@ def main():
         model=model,
         processing_class=tokenizer,
         train_dataset=dataset,
+        eval_dataset=eval_dataset,
         peft_config=peft_config,
         args=training_args,
     )

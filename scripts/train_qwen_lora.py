@@ -18,9 +18,9 @@ def format_row(row, tokenizer):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", default="Qwen/Qwen3.6-35B-A3B")
+    parser.add_argument("--model", default="Qwen/Qwen3-8B")
     parser.add_argument("--data", default="data/sft/current_law_sft.json")
-    parser.add_argument("--output", default="outputs/qwen3.6-legal-lora")
+    parser.add_argument("--output", default="outputs/qwen3-8b-legal-lora")
     parser.add_argument("--max-seq-length", type=int, default=4096)
     args = parser.parse_args()
 

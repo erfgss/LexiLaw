@@ -13,8 +13,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model", default="Qwen/Qwen3.6-35B-A3B")
-    parser.add_argument("--adapter", default="outputs/qwen3.6-legal-ascend-lora")
+    parser.add_argument("--model", default="/workspace/Qwen3-8B")
+    parser.add_argument("--adapter", default="outputs/qwen3-8b-legal-ascend-qlora")
     parser.add_argument("--question", default="《劳动合同法》第三十七条现行规定是什么？")
     parser.add_argument("--device", default="npu:0")
     args = parser.parse_args()

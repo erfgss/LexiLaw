@@ -126,14 +126,14 @@ python scripts/build_current_dataset.py
 Qwen LoRA 训练入口：
 
 ```bash
-python scripts/train_qwen_lora.py --model Qwen/Qwen3.6-35B-A3B
+python scripts/train_qwen_lora.py --model Qwen/Qwen3-8B
 ```
 
 训练完成后可使用版本感知的推理入口：
 
 ```bash
-python inference_qwen.py --model Qwen/Qwen3.6-35B-A3B \
-    --adapter outputs/qwen3.6-legal-lora
+python inference_qwen.py --model Qwen/Qwen3-8B \
+    --adapter outputs/qwen3-8b-legal-lora
 ```
 
 ### Ascend 910B 适配

@@ -2,12 +2,13 @@
 set -euo pipefail
 
 NPU_COUNT="${NPU_COUNT:-2}"
-MODEL="${MODEL:-Qwen/Qwen3.6-35B-A3B}"
-DATA="${DATA:-data/sft/current_law_sft.generated.json}"
-OUTPUT="${OUTPUT:-outputs/qwen3.6-legal-ascend-lora}"
+MODEL="${MODEL:-/workspace/Qwen3-8B}"
+DATA="${DATA:-data/sft/current_law_sft.train.json}"
+EVAL_DATA="${EVAL_DATA:-data/sft/current_law_sft.validation.json}"
+OUTPUT="${OUTPUT:-outputs/qwen3-8b-legal-ascend-lora-fast}"
 MAX_SEQ_LENGTH="${MAX_SEQ_LENGTH:-512}"
 EPOCHS="${EPOCHS:-3.0}"
-QLORA="${QLORA:-1}"
+QLORA="${QLORA:-0}"
 QLORA_ARGS=()
 if [[ "${QLORA}" == "1" ]]; then
   QLORA_ARGS+=(--qlora)
@@ -22,6 +23,7 @@ python scripts/check_ascend.py
 torchrun --nproc_per_node="${NPU_COUNT}" scripts/train_qwen_ascend.py \
   --model "${MODEL}" \
   --data "${DATA}" \
+  --eval-data "${EVAL_DATA}" \
   --output "${OUTPUT}" \
   --max-seq-length "${MAX_SEQ_LENGTH}" \
   --epochs "${EPOCHS}" \
