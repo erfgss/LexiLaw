@@ -1,0 +1,12 @@
+# Install CANN, PyTorch and torch-npu as a matched vendor stack first.
+# Do not install torch/torch-npu independently from this file.
+# Example package names (versions must match the installed CANN/driver):
+#   torch==<matched-version>
+#   torch-npu==<matched-version>
+
+transformers>=4.57.0
+datasets>=2.18.0
+peft>=0.20.0
+trl>=0.20.0
+deepspeed>=0.14.0
+tqdm==4.64.1
